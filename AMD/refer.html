@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+      padding-bottom: 70px; /* Space for bottom nav */
+      padding-top: 80px;   /* Space for fixed header */
+    }
+    /* Fixed Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #000;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+    }
+    header img {
+      max-height: 40px;
+    }
+    /* Balance Section */
+    .balance-section {
+      padding: 20px;
+    }
+    .greeting {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #000;
+    }
+    .balance-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff;
+      color: #000;
+      padding: 5px 20px;
+      border-radius: 18px;
+      border: 2px solid #000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .balance-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .balance-info .label {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .balance-info .amount {
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .balance-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    #withdraw-btn,
+    #deposit-btn {
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 24px;
+      transition: background-color 0.3s;
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    #withdraw-btn {
+      background-color: #000;
+      color: #fff;
+      border: none;
+    }
+    #withdraw-btn:hover {
+      background-color: #333;
+    }
+    #deposit-btn {
+      background-color: #fff;
+      color: #000;
+      border: 2px solid #000;
+    }
+    #deposit-btn:hover {
+      background-color: #f0f0f0;
+    }
+    /* Referral Section */
+    .referral-section {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+    .referral-heading {
+      text-align: center;
+      font-size: 24px;
+      color: #000;
+      margin: 10px 0;
+    }
+    .referral-description {
+      font-size: 14px;
+      color: #000;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .link-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .link-field {
+      width: 90%;
+      max-width: 400px;
+      font-size: 14px;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      text-align: center;
+      background-color: #fff;
+      color: #000;
+    }
+    .copy-link-btn {
+      width: 90%;
+      max-width: 400px;
+      background-color: #000;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px;
+      border: none;
+      border-radius: 24px;
+      cursor: pointer;
+    }
+    .copy-link-btn:hover {
+      background-color: #333;
+    }
+    .totals-bar {
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    /* Dynamic Referral Records Table */
+    .referral-table-container.dynamic {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+    .referral-table.dynamic {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      color: #000;
+      font-size: 14px;
+    }
+    .referral-table.dynamic th,
+    .referral-table.dynamic td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: center;
+    }
+    .referral-table.dynamic th {
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+    /* Static Bonus Reward Tiers Table */
+    .referral-table-container.static {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+    .referral-table.static {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      color: #000;
+      font-size: 14px;
+    }
+    .referral-table.static th,
+    .referral-table.static td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: center;
+    }
+    .referral-table.static th {
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-color: #000;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      color: #fff;
+      font-size: 14px;
+      border-top: 1px solid #fff;
+    }
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-item img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fixed Header -->
+  <header>
+    <img src="images/AMD-logo.png" alt="AMD Logo" onerror="this.onerror=null;this.style.display='none';">
+  </header>
+
+  <!-- Balance Section -->
+  <section class="balance-section">
+    <div class="greeting">Hi, Guest</div>
+    <div class="balance-container">
+      <div class="balance-info">
+        <div class="label">Available Balance</div>
+        <!-- Display exactly the base balance stored in JSONBin -->
+        <div class="amount">₦<span id="current-balance">1.00</span></div>
+      </div>
+      <div class="balance-buttons">
+        <a href="withdraw.html" id="withdraw-btn">Withdraw</a>
+        <a href="deposit.html" id="deposit-btn">Deposit</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Referral Section -->
+  <section class="referral-section">
+    <h2 class="referral-heading">Referral Bonus</h2>
+    <p class="referral-description">
+      Get up to 5% of the amount deposited by other users who signed up with your referral link.
+    </p>
+    <!-- Link + Copy Button -->
+    <div class="link-container">
+      <input type="text" class="link-field" value="http://amd-intercept.netlify.app/create-new-account.html?referral=" readonly />
+      <button class="copy-link-btn">Copy Link</button>
+    </div>
+    <!-- Totals (Invite & Earn) -->
+    <div class="totals-bar" id="totals-bar">
+      Total Invite: 0 | Total Earn: ₦0
+    </div>
+  </section>
+
+  <!-- Dynamic Referral Records Table -->
+  <div class="referral-table-container dynamic">
+    <table class="referral-table dynamic">
+      <thead>
+        <tr>
+          <th>Referred User</th>
+          <th>Deposit Amount</th>
+          <th>Bonus (₦)</th>
+        </tr>
+      </thead>
+      <tbody id="referralsTable">
+        <!-- Dynamic referral records will be populated here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Static Bonus Reward Tiers Table -->
+  <div class="referral-table-container static">
+    <table class="referral-table static">
+      <thead>
+        <tr>
+          <th>Amount (₦)</th>
+          <th>Percentage</th>
+          <th>Reward (₦)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>₦8,000</td>
+          <td>5%</td>
+          <td>₦400</td>
+        </tr>
+        <tr>
+          <td>₦32,000</td>
+          <td>5%</td>
+          <td>₦800</td>
+        </tr>
+        <tr>
+          <td>₦32,000</td>
+          <td>5%</td>
+          <td>₦1,600</td>
+        </tr>
+        <tr>
+          <td>₦64,000</td>
+          <td>5%</td>
+          <td>₦3,200</td>
+        </tr>
+        <tr>
+          <td>₦128,000</td>
+          <td>5%</td>
+          <td>₦6,400</td>
+        </tr>
+        <tr>
+          <td>₦256,000</td>
+          <td>5%</td>
+          <td>₦12,800</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <footer class="bottom-nav">
+    <div class="nav-item">
+      <a href="home.html" class="nav-link">
+        <img src="images/home.png" alt="Home icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Home</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="activities.html" class="nav-link">
+        <img src="images/shopping-bag.png" alt="Activities icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Activities</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="refer.html" class="nav-link">
+        <img src="images/user-add.png" alt="Refer icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Refer</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="me.html" class="nav-link">
+        <img src="images/user.png" alt="Me icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Me</span>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    /* JSONBin.io Setup */
+    const API_KEY = '$2a$10$nnSfeJQZY9FjkKghjfzlPuWFrIe/JV46TLSQbnho77T3kkmx/mMvK';
+    const BIN_ID = '67c9d4dfad19ca34f817aa25';
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    async function fetchJSONBin() {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "GET",
+          headers: { "X-Master-Key": API_KEY }
+        });
+        const data = await response.json();
+        console.log("Data fetched:", data.record);
+        return data.record;
+      } catch (error) {
+        console.error("Error fetching JSONBin:", error);
+        return null;
+      }
+    }
+
+    async function updateJSONBin(data) {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": API_KEY
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        console.log("Data updated:", result);
+      } catch (error) {
+        console.error("Error updating JSONBin:", error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await fetchJSONBin();
+      if (!data || !data.currentUser) {
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // Update greeting and balance display.
+      const currentUser = data.currentUser;
+      document.querySelector('.greeting').textContent = `Hi, ${currentUser.firstName}`;
+      
+      // Display the available balance exactly as stored in JSONBin (base balance only)
+      const baseBalance = Number(currentUser.balance);
+      document.getElementById('current-balance').textContent = baseBalance.toFixed(2);
+      
+      // Update referral link with the current user's email.
+      const referralLinkInput = document.querySelector('.link-field');
+      if (referralLinkInput && currentUser.email) {
+        referralLinkInput.value = `http://127.0.0.1:5500/create-new-account.html?referral=${encodeURIComponent(currentUser.email)}`;
+      }
+      
+      // Retrieve user record from users array to get total invites.
+      const users = data.users || [];
+      const userRecord = users.find(u => u.email === currentUser.email);
+      const totalInvites = (userRecord && userRecord.totalInvites) ? userRecord.totalInvites : 0;
+      
+      // Calculate totalEarn from referral bonus for totals-bar display.
+      const referrals = data.referrals || [];
+      const userReferrals = referrals.filter(r => r.referrer === currentUser.email);
+      const totalEarn = userReferrals.reduce((sum, r) => sum + Number(r.bonus || 0), 0);
+      
+      document.getElementById('totals-bar').textContent = `Total Invite: ${totalInvites} | Total Earn: ₦${totalEarn.toLocaleString()}`;
+      
+      // Populate dynamic referral records table.
+      const referralsTable = document.getElementById('referralsTable');
+      if (userReferrals.length > 0) {
+        referralsTable.innerHTML = userReferrals.map(r => `
+          <tr>
+            <td>${r.referred}</td>
+            <td>₦${Number(r.depositAmount).toLocaleString()}</td>
+            <td>₦${Number(r.bonus).toLocaleString()}</td>
+          </tr>
+        `).join('');
+      } else {
+        referralsTable.innerHTML = `<tr><td colspan="3" style="text-align:center;">No referrals found.</td></tr>`;
+      }
+    });
+
+    // Copy Link button functionality.
+    document.querySelector('.copy-link-btn').addEventListener('click', function() {
+      const linkField = document.querySelector('.link-field');
+      linkField.select();
+      linkField.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      alert('Referral link copied: ' + linkField.value);
+    });
+  </script>
+</body>
+</html>

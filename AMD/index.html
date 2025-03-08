@@ -1,0 +1,221 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+      padding-bottom: 70px;
+      padding-top: 80px;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background-color: #000;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+    }
+    header img {
+      max-height: 40px;
+    }
+    .page-heading {
+      text-align: center;
+      font-size: 24px;
+      color: #000;
+      margin: 20px 0;
+    }
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 90%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .input-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      border: 2px solid #000;
+      border-radius: 18px;
+      padding: 10px 15px;
+      font-size: 14px;
+      color: #000;
+    }
+    .input-field input {
+      border: none;
+      outline: none;
+      flex: 1;
+      background: transparent;
+      color: #000;
+      font-size: 14px;
+    }
+    .show-btn {
+      background: transparent;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .big-btn {
+      background-color: #000;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 18px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .big-btn:hover {
+      background-color: #333;
+    }
+    .outline-btn {
+      background-color: #fff;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      border: 2px solid #000;
+      border-radius: 18px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      text-decoration: none;
+    }
+    .outline-btn:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="images/AMD-logo.png" alt="AMD Logo" onerror="this.onerror=null;this.style.display='none';">
+  </header>
+
+  <h2 class="page-heading">Log In</h2>
+
+  <div class="form-container">
+    <div class="input-field">
+      <input type="email" id="email-field" placeholder="Enter Email Address">
+    </div>
+    <div class="input-field">
+      <input type="password" id="password-field" placeholder="Enter Password">
+      <button class="show-btn" type="button">Show</button>
+    </div>
+
+    <button class="big-btn" id="login-btn">Log In</button>
+    <a href="create-new-account.html" class="outline-btn" id="create-btn">Create New Account</a>
+  </div>
+
+  <script>
+    /* JSONBin.io Setup */
+    const API_KEY = '$2a$10$nnSfeJQZY9FjkKghjfzlPuWFrIe/JV46TLSQbnho77T3kkmx/mMvK';
+    const BIN_ID = '67c9d4dfad19ca34f817aa25';
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    async function fetchJSONBin() {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "GET",
+          headers: { "X-Master-Key": API_KEY }
+        });
+        const data = await response.json();
+        console.log("Data fetched:", data.record);
+        return data.record;
+      } catch (error) {
+        console.error("Error fetching JSONBin:", error);
+        return null;
+      }
+    }
+
+    async function updateJSONBin(data) {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": API_KEY
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        console.log("Data updated:", result);
+      } catch (error) {
+        console.error("Error updating JSONBin:", error);
+      }
+    }
+
+    // Password visibility toggle
+    document.querySelectorAll('.show-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const input = this.parentElement.querySelector('input');
+        if (input.type === 'password') {
+          input.type = 'text';
+          this.textContent = 'Hide';
+        } else {
+          input.type = 'password';
+          this.textContent = 'Show';
+        }
+      });
+    });
+
+    // Login button handler using JSONBin
+    document.getElementById('login-btn').addEventListener('click', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email-field').value.trim();
+      const password = document.getElementById('password-field').value.trim();
+      
+      // Fetch JSONBin data
+      const data = await fetchJSONBin();
+      if (!data) {
+        alert('Error fetching data. Please try again later.');
+        return;
+      }
+      
+      // Check against stored users
+      const users = data.users || [];
+      const user = users.find(u => u.email === email && u.password === password);
+      
+      if (user) {
+        // Set currentUser in JSONBin data
+        data.currentUser = {
+          email: user.email,
+          firstName: user.firstName,
+          balance: user.balance,
+          loggedIn: true
+        };
+        await updateJSONBin(data);
+        // Redirect to home
+        window.location.href = 'home.html';
+      } else {
+        alert('Invalid email or password');
+      }
+    });
+
+    // Optional: Session initialization (if you want to clear any residual session)
+    document.addEventListener('DOMContentLoaded', async () => {
+      // For JSONBin integration, session data is stored in the bin.
+      // Optionally, you could fetch and check if a session exists.
+      // Here, we are not auto-clearing session data.
+    });
+  </script>
+</body>
+</html>

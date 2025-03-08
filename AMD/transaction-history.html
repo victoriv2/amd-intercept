@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction History</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+      padding: 80px 0 70px;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #000;
+      padding: 10px;
+      z-index: 1000;
+      text-align: center;
+    }
+    header img {
+      max-height: 40px;
+    }
+    .history-heading {
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 15px 20px;
+      gap: 10px;
+    }
+    .filter-select, .load-more {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    .load-more {
+      background: #000;
+      color: white;
+      cursor: pointer;
+    }
+    .transactions-list {
+      margin: 0 15px;
+    }
+    .transaction-item {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .transaction-item:hover {
+      transform: translateX(5px);
+    }
+    .transaction-info {
+      flex: 1;
+    }
+    .transaction-type {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .type-icon {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+    .transaction-date {
+      font-size: 12px;
+      color: #666;
+    }
+    .transaction-amount {
+      font-weight: 700;
+      min-width: 100px;
+      text-align: right;
+    }
+    .status-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+    .approved { color: #28a745; background: #e8f5e9; }
+    .declined { color: #dc2626; background: #fee2e2; border: 1px solid #fca5a5; }
+    .completed { color: #28a745; background: #e8f5e9; }
+    .pending { color: #ffc107; background: #fff8e1; }
+    .failed { color: #dc3545; background: #f8d7da; }
+    .positive { color: black; }
+    .negative-amount { color: black !important; }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      display: none;
+    }
+    .error-state {
+      text-align: center;
+      padding: 20px;
+      color: #dc3545;
+      display: none;
+    }
+    .no-activities {
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+      margin: 30px 15px;
+      display: none;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-color: #000;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      color: #fff;
+      font-size: 14px;
+      border-top: 1px solid #fff;
+    }
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+    .nav-item img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="images/AMD-logo.png" alt="AMD Logo">
+  </header>
+
+  <h2 class="history-heading">Transaction History</h2>
+
+  <div class="controls">
+    <select class="filter-select" id="filterSelect">
+      <option value="all">All Transactions</option>
+      <option value="deposit">Deposits</option>
+      <option value="withdraw">Withdrawals</option>
+      <option value="purchase">Purchases</option>
+      <option value="bonus">Bonuses</option>
+      <option value="claim">Daily Claims</option>
+    </select>
+    <button class="load-more" id="loadMore">Load More</button>
+  </div>
+
+  <div class="transactions-list" id="transactionsList"></div>
+  <div class="no-activities" id="noActivities">No recent activities found</div>
+  <div class="loading" id="loading">Loading transactions...</div>
+  <div class="error-state" id="errorState">Error loading transactions. Please try again.</div>
+
+  <footer class="bottom-nav">
+    <div class="nav-item">
+      <a href="home.html" class="nav-link">
+        <img src="images/home.png" alt="Home icon">
+        <span>Home</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="activities.html" class="nav-link">
+        <img src="images/shopping-bag.png" alt="Activities icon">
+        <span>Activities</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="refer.html" class="nav-link">
+        <img src="images/user-add.png" alt="Refer icon">
+        <span>Refer</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="me.html" class="nav-link">
+        <img src="images/user.png" alt="Me icon">
+        <span>Me</span>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    /* JSONBin.io Setup */
+    const API_KEY = '$2a$10$nnSfeJQZY9FjkKghjfzlPuWFrIe/JV46TLSQbnho77T3kkmx/mMvK';
+    const BIN_ID = '67c9d4dfad19ca34f817aa25';
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    async function fetchJSONBin() {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "GET",
+          headers: { "X-Master-Key": API_KEY }
+        });
+        const data = await response.json();
+        console.log("Data fetched:", data.record);
+        return data.record;
+      } catch (error) {
+        console.error("Error fetching JSONBin:", error);
+        return null;
+      }
+    }
+
+    // In this page, we only read data so we don't update JSONBin.
+    // Helper function to process each transaction record.
+    function processTransaction(t, type) {
+      // Assume t.timestamp is an ISO string.
+      return {
+        type: type || t.type,
+        amount: Number(t.amount) || 0,
+        date: t.timestamp ? new Date(t.timestamp) : new Date(),
+        status: (t.status || 'pending').toLowerCase(),
+        details: t.details || (type ? type.charAt(0).toUpperCase() + type.slice(1) : ''),
+        email: t.email
+      };
+    }
+
+    async function loadTransactions() {
+      try {
+        const data = await fetchJSONBin();
+        if (!data) return [];
+        const currentUser = data.currentUser;
+        if (!currentUser) {
+          window.location.href = 'login.html';
+          return [];
+        }
+        // Retrieve transactions from different arrays.
+        const transactionsData = data.transactions || [];
+        const withdrawals = data.withdrawals || [];
+        const deposits = data.deposits || [];
+        const referrals = data.referrals || [];
+        
+        // Map referral records to a transaction format.
+        const referralTransactions = referrals
+          .filter(r => r.referrer === currentUser.email)
+          .map(r => ({
+            type: 'bonus',
+            amount: Number(r.bonus) || 0,
+            timestamp: r.timestamp,
+            status: 'completed',
+            details: `Referral Reward: Received ₦${Number(r.bonus).toLocaleString()} for referring ${r.referred}`,
+            email: r.referrer
+          }));
+
+        const processedTransactions = [
+          ...withdrawals.filter(w => w.email === currentUser.email).map(w => processTransaction(w, 'withdraw')),
+          ...transactionsData.filter(t => t.email === currentUser.email).map(t => processTransaction(t)),
+          ...deposits.filter(d => d.email === currentUser.email).map(d => processTransaction(d, 'deposit')),
+          ...referralTransactions.map(rt => processTransaction(rt, 'bonus'))
+        ].sort((a, b) => b.date - a.date);
+
+        return processedTransactions;
+      } catch (error) {
+        console.error('Transaction loading failed:', error);
+        document.getElementById('errorState').style.display = 'block';
+        return [];
+      }
+    }
+
+    function renderTransactions(filteredTransactions) {
+      const transactionsList = document.getElementById('transactionsList');
+      const noActivities = document.getElementById('noActivities');
+      transactionsList.innerHTML = '';
+      noActivities.style.display = 'none';
+
+      if (!filteredTransactions.length) {
+        noActivities.style.display = 'block';
+        return;
+      }
+
+      transactionsList.innerHTML = filteredTransactions.map(transaction => {
+        const amount = Number(transaction.amount) || 0;
+        const status = transaction.status.toLowerCase();
+        const isNegative = amount < 0;
+        const displayAmount = Math.abs(amount);
+
+        const dateOptions = { 
+          day: '2-digit', 
+          month: 'short', 
+          year: 'numeric', 
+          hour: '2-digit', 
+          minute: '2-digit',
+          timeZone: 'Africa/Lagos'
+        };
+
+        return `
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-type">
+                <img src="${transactionTypes[transaction.type]?.icon || 'default-icon.png'}" 
+                    class="type-icon" alt="${transaction.type}">
+                ${transaction.details}
+              </div>
+              <span class="transaction-date">
+                ${transaction.date.toLocaleDateString('en-GB', dateOptions)}
+              </span>
+              <span class="status-badge ${status}">
+                ${status}
+              </span>
+            </div>
+            <div class="transaction-amount ${isNegative ? 'negative-amount' : 'positive'}">
+              ${isNegative ? '-' : '+'}₦${displayAmount.toLocaleString('en-NG', { minimumFractionDigits: 2 })}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterTransactions(transactions, currentFilter) {
+      if (currentFilter === 'all') {
+        return transactions;
+      } else {
+        return transactions.filter(t => t.type === currentFilter);
+      }
+    }
+
+    const transactionTypes = {
+      deposit: { name: 'Deposit', icon: 'images/time-past.png' },
+      withdraw: { name: 'Withdrawal', icon: 'images/time-past.png' },
+      purchase: { name: 'Purchase', icon: 'images/time-past.png' },
+      bonus: { name: 'Bonus', icon: 'images/time-past.png' },
+      claim: { name: 'Daily Claim', icon: 'images/time-past.png' }
+    };
+
+    let currentFilter = 'all';
+    let transactions = [];
+
+    const filterSelect = document.getElementById('filterSelect');
+    filterSelect.addEventListener('change', (e) => {
+      currentFilter = e.target.value;
+      renderTransactions(filterTransactions(transactions, currentFilter));
+    });
+
+    (async () => {
+      document.getElementById('loading').style.display = 'block';
+      try {
+        transactions = await loadTransactions();
+        if (transactions.length > 0) {
+          renderTransactions(filterTransactions(transactions, currentFilter));
+        } else {
+          document.getElementById('noActivities').style.display = 'block';
+        }
+      } catch (error) {
+        document.getElementById('errorState').style.display = 'block';
+        console.error('Transaction load error:', error);
+      } finally {
+        document.getElementById('loading').style.display = 'none';
+      }
+    })();
+  </script>
+</body>
+</html>

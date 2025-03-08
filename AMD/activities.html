@@ -1,0 +1,341 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activities</title>
+  <style>
+    /* Basic Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: #f5f5f5; font-family: sans-serif; padding-bottom: 70px; padding-top: 80px; }
+    /* Fixed Header */
+    header { position: fixed; top: 0; left: 0; right: 0; background-color: #000; text-align: center; padding: 10px; z-index: 1000; }
+    header img { max-height: 40px; }
+    /* Balance Section */
+    .balance-section { padding: 20px; }
+    .greeting { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #000; }
+    .balance-container {
+      display: flex; justify-content: space-between; align-items: center;
+      background-color: #fff; color: #000; padding: 5px 20px;
+      border-radius: 18px; border: 2px solid #000; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .balance-info { display: flex; flex-direction: column; }
+    .balance-info .label { font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+    .balance-info .amount { font-size: 28px; font-weight: bold; }
+    .balance-buttons { display: flex; flex-direction: column; align-items: flex-end; }
+    .balance-buttons a {
+      display: inline-block; text-decoration: none; text-align: center;
+      font-size: 14px; font-weight: bold; padding: 8px 12px; border-radius: 24px;
+      transition: background-color 0.3s; width: 100px; margin-bottom: 10px;
+    }
+    #withdraw-btn { background-color: #000; color: #fff; border: none; }
+    #withdraw-btn:hover { background-color: #333; }
+    #deposit-btn { background-color: #fff; color: #000; border: 2px solid #000; margin-bottom: 0; }
+    #deposit-btn:hover { background-color: #f0f0f0; }
+    /* Activities Heading */
+    .activities-heading { text-align: center; margin: 0; font-size: 24px; color: #000; padding: 0px 0; }
+    /* Activity Listings Container */
+    .activity-listings { padding: 20px; }
+    /* No Activities Message */
+    .no-activities { text-align: center; margin-top: 20px; font-size: 16px; color: #000; }
+    /* Activity Card Styles */
+    .activity-card {
+      display: flex; background-color: #fff; color: #000;
+      border: 2px solid #000; border-radius: 18px; padding: 8px; margin-bottom: 10px; align-items: center;
+    }
+    .activity-image {
+      width: 80px; height: 80px; background-color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid #000; margin-right: 20px; border-radius: 12px;
+    }
+    .activity-image img { max-width: 100%; max-height: 100%; border-radius: 12px; }
+    .activity-details { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .activity-text .activity-name { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
+    .activity-text div { font-size: 14px; margin-bottom: 4px; }
+    .claim-container { align-self: flex-start; }
+    .claim-btn {
+      font-size: 16px; padding: 6px 20px; border: none; border-radius: 12px;
+      background-color: #000; color: #fff; cursor: pointer;
+    }
+    .claim-btn:hover { background-color: #333; }
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+      background-color: #000; display: flex; justify-content: space-around; align-items: center;
+      color: #fff; font-size: 14px; border-top: 1px solid #fff;
+    }
+    .nav-link {
+      display: flex; flex-direction: column; align-items: center;
+      text-decoration: none; color: inherit; width: 100%; height: 100%; justify-content: center;
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .nav-item img { width: 24px; height: 24px; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+  <!-- Fixed Header -->
+  <header>
+    <img src="images/AMD-logo.png" alt="AMD Logo" onerror="this.onerror=null;this.style.display='none';">
+  </header>
+
+  <!-- Balance Section -->
+  <section class="balance-section">
+    <div class="greeting">Hi, Guest</div>
+    <div class="balance-container">
+      <div class="balance-info">
+        <div class="label">Available Balance</div>
+        <!-- Available balance now shows exactly the base balance from JSONBin -->
+        <div class="amount">₦<span id="current-balance">1.00</span></div>
+      </div>
+      <div class="balance-buttons">
+        <a href="withdraw.html" id="withdraw-btn">Withdraw</a>
+        <a href="deposit.html" id="deposit-btn">Deposit</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activities Heading -->
+  <div class="activities-heading">Activities</div>
+
+  <!-- Activity Listings Container -->
+  <section class="activity-listings">
+    <!-- Content will be injected here -->
+  </section>
+
+  <!-- Bottom Navigation Bar -->
+  <footer class="bottom-nav">
+    <div class="nav-item">
+      <a href="home.html" class="nav-link">
+        <img src="images/home.png" alt="Home icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Home</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="activities.html" class="nav-link">
+        <img src="images/shopping-bag.png" alt="Activities icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Activities</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="refer.html" class="nav-link">
+        <img src="images/user-add.png" alt="Refer icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Refer</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="me.html" class="nav-link">
+        <img src="images/user.png" alt="Me icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Me</span>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    /* JSONBin.io Utility Functions */
+    const API_KEY = '$2a$10$nnSfeJQZY9FjkKghjfzlPuWFrIe/JV46TLSQbnho77T3kkmx/mMvK';
+    const BIN_ID = '67c9d4dfad19ca34f817aa25';
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    async function fetchJSONBin() {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "GET",
+          headers: { "X-Master-Key": API_KEY }
+        });
+        const data = await response.json();
+        console.log("Data fetched:", data.record);
+        return data.record;
+      } catch (error) {
+        console.error("Error fetching JSONBin:", error);
+        return null;
+      }
+    }
+
+    async function updateJSONBin(data) {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": API_KEY
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        console.log("Data updated:", result);
+      } catch (error) {
+        console.error("Error updating JSONBin:", error);
+      }
+    }
+
+    /* Update Balance Display */
+    async function updateBalanceDisplay() {
+      try {
+        const data = await fetchJSONBin();
+        if (!data) return;
+        const currentUser = data.currentUser;
+        if (!currentUser) {
+          window.location.href = 'index.html';
+          return;
+        }
+        const users = data.users || [];
+        const latestUserData = users.find(u => u.email === currentUser.email);
+        if (latestUserData) {
+          document.querySelector('.greeting').textContent = `Hi, ${latestUserData.firstName}`;
+          // Directly display the base balance stored in JSONBin (without adding referral bonus)
+          const baseBalance = Number(latestUserData.balance);
+          document.getElementById('current-balance').textContent = baseBalance.toFixed(2);
+          // Update currentUser in JSONBin data
+          data.currentUser = latestUserData;
+          await updateJSONBin(data);
+        }
+      } catch (error) {
+        console.error('Balance update error:', error);
+      }
+    }
+
+    /* Render Activities */
+    async function renderActivities() {
+      try {
+        const data = await fetchJSONBin();
+        if (!data) return;
+        const allPurchases = data.purchases || [];
+        const currentUser = data.currentUser;
+        let filtered = allPurchases;
+        if (currentUser && currentUser.email) {
+          // Filter for the current user's purchases
+          filtered = allPurchases.filter(purchase => purchase.email === currentUser.email);
+        }
+        // Sort purchases by date (using lastClaimDate if available)
+        filtered.sort((a, b) => {
+          const dateA = a.lastClaimDate ? new Date(a.lastClaimDate) : new Date(a.date);
+          const dateB = b.lastClaimDate ? new Date(b.lastClaimDate) : new Date(b.date);
+          return dateB - dateA;
+        });
+        // Save filtered array globally for claim button handlers
+        window.filteredPurchases = filtered;
+        
+        const listingsContainer = document.querySelector('.activity-listings');
+        const today = new Date().toLocaleDateString();
+        
+        if (filtered.length === 0) {
+          listingsContainer.innerHTML = '<div class="no-activities">No Activities</div>';
+        } else {
+          let html = '';
+          filtered.forEach((purchase, index) => {
+            purchase.dailyProfit = purchase.dailyProfit || 0;
+            purchase.duration = purchase.duration || 40;
+            purchase.daysClaimed = purchase.daysClaimed || 0;
+            const claimedToday = purchase.lastClaimDate === today;
+            html += `
+              <div class="activity-card" data-index="${index}">
+                <div class="activity-image">
+                  <img src="${
+                    purchase.image && typeof purchase.image === 'string'
+                      ? (purchase.image.startsWith('images/') ? purchase.image : 'images/' + purchase.image)
+                      : 'images/default.png'
+                  }" alt="Activity Image">
+                </div>
+                <div class="activity-details">
+                  <div class="activity-text">
+                    <div class="activity-name">${purchase.productName}</div>
+                    <div class="daily-profit">Daily Profit: ₦${purchase.dailyProfit.toFixed(2)}</div>
+                    <div class="completion">
+                      Completed: ${purchase.daysClaimed} day${purchase.daysClaimed !== 1 ? 's' : ''} out of ${purchase.duration} Days
+                    </div>
+                  </div>
+                  <div class="claim-container">
+                    ${ (claimedToday || purchase.daysClaimed >= purchase.duration) ? 
+                      '<span>Reward Claimed</span>' : 
+                      `<button class="claim-btn">Claim ₦${purchase.dailyProfit.toFixed(2)} Daily Reward</button>`
+                    }
+                  </div>
+                </div>
+              </div>`;
+          });
+          listingsContainer.innerHTML = html;
+          attachClaimListeners();
+        }
+      } catch (error) {
+        console.error("Error in renderActivities:", error);
+      }
+    }
+    
+    /* Attach Claim Button Listeners */
+    function attachClaimListeners() {
+      document.querySelectorAll('.claim-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+          const card = this.closest('.activity-card');
+          const index = parseInt(card.getAttribute('data-index'), 10);
+          await handleClaim(index);
+        });
+      });
+    }
+    
+    /* Handle Claim Action */
+    async function handleClaim(index) {
+      try {
+        const data = await fetchJSONBin();
+        if (!data) return;
+        let globalPurchases = data.purchases || [];
+        const targetPurchase = window.filteredPurchases[index];
+        const today = new Date().toLocaleDateString();
+  
+        // Update the target purchase in the global purchases array
+        const purchaseIndex = globalPurchases.findIndex(p => 
+          p.email === targetPurchase.email &&
+          p.date === targetPurchase.date &&
+          p.productName === targetPurchase.productName
+        );
+        if (purchaseIndex !== -1) {
+          globalPurchases[purchaseIndex].daysClaimed = (globalPurchases[purchaseIndex].daysClaimed || 0) + 1;
+          globalPurchases[purchaseIndex].lastClaimDate = today;
+        }
+        data.purchases = globalPurchases;
+  
+        // Update current user's base balance by adding daily profit
+        let currentUser = data.currentUser;
+        currentUser.balance += targetPurchase.dailyProfit;
+        data.currentUser = currentUser;
+  
+        // Also update the corresponding record in the "users" array
+        let users = data.users || [];
+        const userIndex = users.findIndex(u => u.email === currentUser.email);
+        if (userIndex !== -1) {
+          users[userIndex].balance = currentUser.balance;
+          data.users = users;
+        }
+  
+        // Recalculate referral bonus and update displayed balance (if needed)
+        // Here we simply display the base balance stored in JSONBin
+        document.getElementById('current-balance').textContent = currentUser.balance.toFixed(2);
+  
+        // Record the transaction
+        let transactions = data.transactions || [];
+        const transaction = {
+          type: 'claim',
+          amount: targetPurchase.dailyProfit,
+          date: new Date(),
+          status: 'completed',
+          details: `Daily Claim: ${targetPurchase.productName}`,
+          email: currentUser.email
+        };
+        transactions.push(transaction);
+        data.transactions = transactions;
+  
+        await updateJSONBin(data);
+        alert('Daily Reward claimed! Balance updated.');
+        await renderActivities();
+      } catch (error) {
+        console.error("Error in handleClaim:", error);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+      await updateBalanceDisplay();
+      await renderActivities();
+    });
+  </script>
+</body>
+</html>

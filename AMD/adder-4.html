@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updating Balance</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h2>Updating Your Balance...</h2>
+        <div class="loader"></div>
+        <p>Adding ₦64,000 to your account</p>
+        <p>Redirecting to Home in 1 seconds</p>
+    </div>
+
+    <script>
+      /* JSONBin.io Setup */
+      const API_KEY = '$2a$10$nnSfeJQZY9FjkKghjfzlPuWFrIe/JV46TLSQbnho77T3kkmx/mMvK';
+      const BIN_ID = '67c9d4dfad19ca34f817aa25';
+      const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+      async function fetchJSONBin() {
+        try {
+          const response = await fetch(BIN_URL, {
+            method: "GET",
+            headers: { "X-Master-Key": API_KEY }
+          });
+          const data = await response.json();
+          console.log("Data fetched:", data.record);
+          return data.record;
+        } catch (error) {
+          console.error("Error fetching JSONBin:", error);
+          return null;
+        }
+      }
+
+      async function updateJSONBin(data) {
+        try {
+          const response = await fetch(BIN_URL, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Master-Key": API_KEY
+            },
+            body: JSON.stringify(data)
+          });
+          const result = await response.json();
+          console.log("Data updated:", result);
+        } catch (error) {
+          console.error("Error updating JSONBin:", error);
+        }
+      }
+
+      async function processDeposit() {
+        const depositAmount = 64000;
+        const data = await fetchJSONBin();
+        if (!data) return;
+
+        // Ensure currentUser exists; if not, redirect to login.
+        let currentUser = data.currentUser;
+        if (!currentUser) {
+          window.location.href = 'index.html';
+          return;
+        }
+
+        // Update the current user's balance
+        currentUser.balance = parseFloat(currentUser.balance) + depositAmount;
+
+        // Record deposit transaction for current user
+        const deposit = {
+          amount: depositAmount,
+          timestamp: new Date().toISOString(),
+          status: "completed",
+          email: currentUser.email
+        };
+        data.deposits = data.deposits || [];
+        data.deposits.push(deposit);
+
+        // Update currentUser in the overall data
+        data.currentUser = currentUser;
+
+        // Update the current user's record in the users array
+        data.users = data.users || [];
+        const userIndex = data.users.findIndex(u => u.email === currentUser.email);
+        if (userIndex > -1) {
+          data.users[userIndex] = currentUser;
+        }
+
+        // Check if the current user was referred by someone (i.e. referral field exists)
+        if (currentUser.referral) {
+          const bonus = depositAmount * 0.05; // 5% bonus
+          const referrerIndex = data.users.findIndex(u => u.email === currentUser.referral);
+          if (referrerIndex > -1) {
+            data.users[referrerIndex].balance = parseFloat(data.users[referrerIndex].balance) + bonus;
+          }
+          data.referrals = data.referrals || [];
+          const referralRecord = {
+            referrer: currentUser.referral,
+            referred: currentUser.email,
+            depositAmount: depositAmount,
+            bonus: bonus,
+            timestamp: new Date().toISOString()
+          };
+          data.referrals.push(referralRecord);
+        }
+
+        // Update JSONBin with the new data
+        await updateJSONBin(data);
+      }
+
+      (async () => {
+        await processDeposit();
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 1000);
+      })();
+    </script>
+</body>
+</html>

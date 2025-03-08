@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deposit</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+      /* Space for bottom nav */
+      padding-bottom: 70px;
+      /* Space for fixed header */
+      padding-top: 80px;
+    }
+    /* Fixed Header */
+    header {
+      position: fixed;
+      top: 0; 
+      left: 0; 
+      right: 0;
+      background-color: #000;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+    }
+    header img {
+      max-height: 40px;
+    }
+
+    /* Main Heading & Subheading */
+    .deposit-heading {
+      text-align: center;
+      font-size: 24px;
+      color: #000;
+      margin-top: 20px;
+    }
+    .deposit-subheading {
+      text-align: center;
+      font-size: 16px;
+      color: #000;
+      margin: 10px 0 20px 0;
+    }
+
+    /* Deposit Amount Buttons */
+    .amounts-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px; /* spacing between buttons */
+      padding: 0 20px;
+    }
+    .amount-btn {
+  /* Add these properties */
+  display: block;
+  text-decoration: none;
+  /* Existing properties */
+  background-color: #000;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 18px;
+  width: 80%;
+  max-width: 300px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+}
+    .amount-btn:hover {
+      background-color: #333;
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0; 
+      right: 0;
+      height: 60px;
+      background-color: #000;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      color: #fff;
+      font-size: 14px;
+      border-top: 1px solid #fff;
+    }
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-item img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <!-- Replace with your AMD logo path -->
+    <img src="images/AMD-logo.png" alt="AMD Logo" onerror="this.onerror=null;this.style.display='none';">
+  </header>
+
+  <!-- Deposit Heading -->
+  <h2 class="deposit-heading">Deposit</h2>
+  <p class="deposit-subheading">Kindly Choose the Amount you want to Deposit</p>
+
+<!-- Amount Buttons -->
+<div class="amounts-container">
+  <a href="https://paystack.com/pay/qtq6iycpky" class="amount-btn">₦8,000</a>
+  <a href="https://paystack.com/pay/n03ygsb49k" class="amount-btn">₦16,000</a>
+  <a href="https://paystack.com/pay/khhbf8-n9b" class="amount-btn">₦32,000</a>
+  <a href="https://paystack.com/pay/p1cjl2omse" class="amount-btn">₦64,000</a>
+  <a href="https://paystack.com/pay/-vsygxfh38" class="amount-btn">₦128,000</a>
+  <a href="https://paystack.com/pay/1msxfl6udb" class="amount-btn">₦256,000</a>
+</div>
+
+<!-- Bottom Navigation Bar -->
+<footer class="bottom-nav">
+  <div class="nav-item">
+    <a href="home.html" class="nav-link">
+      <img src="images/home.png" alt="Home icon" onerror="this.onerror=null;this.style.display='none';">
+      <span>Home</span>
+    </a>
+  </div>
+  <div class="nav-item">
+    <a href="activities.html" class="nav-link">
+      <img src="images/shopping-bag.png" alt="Activities icon" onerror="this.onerror=null;this.style.display='none';">
+      <span>Activities</span>
+    </a>
+  </div>
+  <div class="nav-item">
+    <a href="refer.html" class="nav-link">
+      <img src="images/user-add.png" alt="Refer icon" onerror="this.onerror=null;this.style.display='none';">
+      <span>Refer</span>
+    </a>
+  </div>
+  <div class="nav-item">
+    <a href="me.html" class="nav-link">
+      <img src="images/user.png" alt="Me icon" onerror="this.onerror=null;this.style.display='none';">
+      <span>Me</span>
+    </a>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.amount-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+          const amount = parseFloat(this.textContent.replace(/[^0-9.]/g, ''));
+          // Add referral bonus tracking here
+      });
+  });
+  </script>
+</body>
+</html>

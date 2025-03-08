@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Information</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+      padding-bottom: 70px; /* Space for bottom nav */
+      padding-top: 80px;   /* Space for fixed header */
+    }
+    /* Fixed Header */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background-color: #000;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+    }
+    header img {
+      max-height: 40px;
+    }
+    /* Page Heading (Bank Information) */
+    .page-heading {
+      text-align: center;
+      font-size: 24px;
+      color: #000;
+      margin: 20px 0;
+    }
+    /* Input Fields Container */
+    .inputs-container {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .input-field {
+      background-color: #fff;
+      border: 2px solid #000;
+      border-radius: 18px;
+      padding: 10px 15px;
+      font-size: 14px;
+      color: #000;
+    }
+    .input-field::placeholder {
+      color: #888;
+    }
+    /* Save Button */
+    .save-btn {
+      display: block;
+      width: 100%;
+      max-width: 90%;
+      margin: 30px auto;
+      background-color: #000;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      padding: 12px 0;
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+    }
+    .save-btn:hover {
+      background-color: #333;
+    }
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 60px;
+      background-color: #000;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      color: #fff;
+      font-size: 14px;
+      border-top: 1px solid #fff;
+    }
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-item img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <img src="images/AMD-logo.png" alt="AMD Logo" onerror="this.onerror=null;this.style.display='none';">
+  </header>
+
+  <!-- Page Heading -->
+  <h2 class="page-heading">Bank Information</h2>
+
+  <!-- Input Fields -->
+  <div class="inputs-container">
+    <input class="input-field" type="text" placeholder="Enter Bank Name">
+    <input class="input-field" type="text" placeholder="Enter Account Name">
+    <input class="input-field" type="text" placeholder="Enter Account Number" maxlength="10" id="accountNumber">
+  </div>
+
+  <!-- Save Button -->
+  <button class="save-btn">Save</button>
+
+  <!-- Bottom Navigation Bar -->
+  <footer class="bottom-nav">
+    <div class="nav-item">
+      <a href="home.html" class="nav-link">
+        <img src="images/home.png" alt="Home icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Home</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="activities.html" class="nav-link">
+        <img src="images/shopping-bag.png" alt="Activities icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Activities</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="refer.html" class="nav-link">
+        <img src="images/user-add.png" alt="Refer icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Refer</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="me.html" class="nav-link">
+        <img src="images/user.png" alt="Me icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Me</span>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    /* JSONBin.io Setup */
+    const API_KEY = '$2a$10$nnSfeJQZY9FjkKghjfzlPuWFrIe/JV46TLSQbnho77T3kkmx/mMvK';
+    const BIN_ID = '67c9d4dfad19ca34f817aa25';
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    async function fetchJSONBin() {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "GET",
+          headers: { "X-Master-Key": API_KEY }
+        });
+        const data = await response.json();
+        console.log("Data fetched:", data.record);
+        return data.record;
+      } catch (error) {
+        console.error("Error fetching JSONBin:", error);
+        return null;
+      }
+    }
+
+    async function updateJSONBin(data) {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": API_KEY
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        console.log("Data updated:", result);
+      } catch (error) {
+        console.error("Error updating JSONBin:", error);
+      }
+    }
+
+    // Populate input fields from current user's bank info (if available)
+    document.addEventListener('DOMContentLoaded', async function() {
+      const data = await fetchJSONBin();
+      if (data && data.currentUser && data.users) {
+        const currentUser = data.currentUser;
+        let bankName = '', accountName = '', accountNumber = '';
+        const userRecord = data.users.find(user => user.email === currentUser.email);
+        if (userRecord) {
+          bankName = userRecord.bankName || '';
+          accountName = userRecord.accountName || '';
+          accountNumber = userRecord.accountNumber || '';
+        }
+        const inputs = document.querySelectorAll('.input-field');
+        inputs.forEach(input => {
+          const placeholder = input.getAttribute('placeholder');
+          if (placeholder === 'Enter Bank Name') {
+            input.value = bankName;
+          } else if (placeholder === 'Enter Account Name') {
+            input.value = accountName;
+          } else if (placeholder === 'Enter Account Number') {
+            input.value = accountNumber;
+          }
+        });
+      }
+
+      // Add input restriction for account number
+      const accountNumberInput = document.querySelector('input[placeholder="Enter Account Number"]');
+      accountNumberInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/\D/g, '');
+        this.value = this.value.slice(0, 10);
+      });
+    });
+
+    // Save handler: update the current user's bank info in JSONBin
+    document.querySelector('.save-btn').addEventListener('click', async function() {
+      const inputs = document.querySelectorAll('.input-field');
+      let allFilled = true;
+      let accountNumberValid = true;
+      const bankData = {};
+
+      inputs.forEach(input => {
+        const value = input.value.trim();
+        const placeholder = input.getAttribute('placeholder');
+        if (!value) allFilled = false;
+
+        if (placeholder === 'Enter Bank Name') {
+          bankData.bankName = value;
+        } else if (placeholder === 'Enter Account Name') {
+          bankData.accountName = value;
+        } else if (placeholder === 'Enter Account Number') {
+          bankData.accountNumber = value;
+          if (!/^\d{10}$/.test(value)) {
+            accountNumberValid = false;
+            input.style.borderColor = '#ff0000';
+          } else {
+            input.style.borderColor = '#000';
+          }
+        }
+      });
+
+      if (!allFilled) {
+        alert('Please fill in all fields before saving.');
+        return;
+      }
+
+      if (!accountNumberValid) {
+        alert('Account Number must be exactly 10 digits');
+        return;
+      }
+
+      // Fetch current JSONBin data
+      const data = await fetchJSONBin();
+      if (!data) return;
+
+      // Update current user's bank info in the "users" array
+      if (data.currentUser && data.currentUser.email) {
+        const email = data.currentUser.email;
+        data.users = data.users || [];
+        const userIndex = data.users.findIndex(user => user.email === email);
+        if (userIndex !== -1) {
+          data.users[userIndex].bankName = bankData.bankName;
+          data.users[userIndex].accountName = bankData.accountName;
+          data.users[userIndex].accountNumber = bankData.accountNumber;
+          // Also update currentUser
+          data.currentUser.bankName = bankData.bankName;
+          data.currentUser.accountName = bankData.accountName;
+          data.currentUser.accountNumber = bankData.accountNumber;
+        }
+        await updateJSONBin(data);
+      }
+
+      alert('Bank information saved successfully!');
+      window.location.href = 'me.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create New Account</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+      padding-bottom: 70px;
+      padding-top: 80px;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background-color: #000;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+    }
+    header img {
+      max-height: 40px;
+    }
+    .page-heading {
+      text-align: center;
+      font-size: 24px;
+      color: #000;
+      margin: 20px 0;
+    }
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 90%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .input-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      border: 2px solid #000;
+      border-radius: 18px;
+      padding: 10px 15px;
+      font-size: 14px;
+      color: #000;
+    }
+    .input-field input {
+      border: none;
+      outline: none;
+      flex: 1;
+      background: transparent;
+      color: #000;
+      font-size: 14px;
+    }
+    .show-btn {
+      background: transparent;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .big-btn {
+      background-color: #000;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 18px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .big-btn:hover {
+      background-color: #333;
+    }
+    .outline-btn {
+      background-color: #fff;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      border: 2px solid #000;
+      border-radius: 18px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      text-decoration: none;
+    }
+    .outline-btn:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="images/AMD-logo.png" alt="AMD Logo" onerror="this.onerror=null;this.style.display='none';">
+  </header>
+
+  <h2 class="page-heading">Create New Account</h2>
+
+  <div class="form-container">
+    <div class="input-field">
+      <input type="text" id="firstName" placeholder="Enter First Name">
+    </div>
+    <div class="input-field">
+      <input type="text" id="lastName" placeholder="Enter Last Name">
+    </div>
+    <div class="input-field">
+      <input type="email" id="email-field" placeholder="Enter Email Address">
+    </div>
+    <div class="input-field">
+      <input type="password" id="password-field" placeholder="Enter Password">
+      <button class="show-btn" type="button">Show</button>
+    </div>
+    <div class="input-field">
+      <input type="password" id="confirm-password-field" placeholder="Enter Password Again">
+      <button class="show-btn" type="button">Show</button>
+    </div>
+    <div class="input-field">
+      <!-- The referral field will be auto-filled if the URL includes a referral parameter -->
+      <input type="text" id="referral-field" placeholder="Enter Referral Address (Optional)">
+    </div>
+
+    <button class="big-btn" id="create-account-btn">Create Account</button>
+    <a href="index.html" class="outline-btn" id="login-btn">Log In</a>
+  </div>
+
+  <script>
+    /* JSONBin.io Setup */
+    const API_KEY = '$2a$10$nnSfeJQZY9FjkKghjfzlPuWFrIe/JV46TLSQbnho77T3kkmx/mMvK';
+    const BIN_ID = '67c9d4dfad19ca34f817aa25';
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    async function fetchJSONBin() {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "GET",
+          headers: { "X-Master-Key": API_KEY }
+        });
+        const data = await response.json();
+        console.log("Data fetched:", data.record);
+        return data.record;
+      } catch (error) {
+        console.error("Error fetching JSONBin:", error);
+        return null;
+      }
+    }
+
+    async function updateJSONBin(data) {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": API_KEY
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        console.log("Data updated:", result);
+      } catch (error) {
+        console.error("Error updating JSONBin:", error);
+      }
+    }
+
+    // Auto-fill referral field if URL has "referral" query parameter.
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const refEmail = urlParams.get('referral');
+      if (refEmail) {
+        document.getElementById('referral-field').value = refEmail;
+      }
+    });
+
+    // Password visibility toggle
+    document.querySelectorAll('.show-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const input = this.parentElement.querySelector('input');
+        if (input.type === 'password') {
+          input.type = 'text';
+          this.textContent = 'Hide';
+        } else {
+          input.type = 'password';
+          this.textContent = 'Show';
+        }
+      });
+    });
+
+    // Account creation handler using JSONBin.io
+    document.getElementById('create-account-btn').addEventListener('click', async function(e) {
+      e.preventDefault();
+
+      // Get form values.
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('email-field').value.trim();
+      const password = document.getElementById('password-field').value;
+      const confirmPassword = document.getElementById('confirm-password-field').value;
+      const referral = document.getElementById('referral-field').value.trim();
+
+      // Validation checks.
+      if (!firstName || !lastName || !email || !password || !confirmPassword) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      if (!validateEmail(email)) {
+        alert('Please enter a valid email address');
+        return;
+      }
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+      }
+      if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+
+      // Fetch the current JSONBin data.
+      const data = await fetchJSONBin();
+      if (!data) return;
+
+      // Retrieve existing users.
+      data.users = data.users || [];
+      const emailExists = data.users.some(user => user.email === email);
+      if (emailExists) {
+        alert('Email already registered');
+        return;
+      }
+
+      // If referral is provided, update the referrer's invite count.
+      if (referral) {
+        const referrerIndex = data.users.findIndex(user => user.email === referral);
+        if (referrerIndex !== -1) {
+          if (!data.users[referrerIndex].totalInvites) {
+            data.users[referrerIndex].totalInvites = 0;
+          }
+          data.users[referrerIndex].totalInvites += 1;
+        }
+      }
+
+      // Create new user object.
+      const newUser = {
+        firstName,
+        lastName,
+        email,
+        password,
+        referral,  // Stores the referral email if provided.
+        balance: 1.00,
+        joined: new Date().toISOString()
+      };
+
+      // Save new user to the users array.
+      data.users.push(newUser);
+
+      // Set currentUser in JSONBin data.
+      data.currentUser = {
+        email: newUser.email,
+        firstName: newUser.firstName,
+        balance: newUser.balance,
+        loggedIn: true
+      };
+
+      // Update JSONBin with the new data.
+      await updateJSONBin(data);
+
+      // Redirect to home page.
+      window.location.href = 'home.html';
+    });
+
+    // Email validation function.
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    // Session cleanup: if currentUser exists but not loggedIn, remove it.
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser && !currentUser.loggedIn) {
+        localStorage.removeItem('currentUser');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Me</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+      padding-bottom: 70px;
+      padding-top: 80px;
+    }
+    /* Fixed Header */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background-color: #000;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+    }
+    header img {
+      max-height: 40px;
+    }
+    /* Balance Section */
+    .balance-section {
+      padding: 20px;
+    }
+    .greeting {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #000;
+    }
+    .balance-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff;
+      color: #000;
+      padding: 5px 20px;
+      border-radius: 18px;
+      border: 2px solid #000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .balance-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .balance-info .label {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .balance-info .amount {
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .balance-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .balance-buttons a {
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 24px;
+      transition: background-color 0.3s;
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    #withdraw-btn {
+      background-color: #000;
+      color: #fff;
+      border: none;
+    }
+    #withdraw-btn:hover {
+      background-color: #333;
+    }
+    #deposit-btn {
+      background-color: #fff;
+      color: #000;
+      border: 2px solid #000;
+      margin-bottom: 0;
+    }
+    #deposit-btn:hover {
+      background-color: #f0f0f0;
+    }
+    /* Settings Heading */
+    .settings-heading {
+      text-align: center;
+      margin: 0;
+      font-size: 24px;
+      color: #000;
+      padding: 10px 0;
+    }
+    /* Settings List */
+    .settings-list {
+      padding: 0 20px;
+      margin-top: 10px;
+    }
+    .settings-item {
+      display: flex;
+      align-items: center;
+      background-color: #000;
+      color: #fff;
+      border-radius: 18px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .settings-item img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+    .settings-item span {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .settings-item:hover {
+      background-color: #333;
+    }
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-color: #000;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      color: #fff;
+      font-size: 14px;
+      border-top: 1px solid #fff;
+    }
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-item img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <img src="images/AMD-logo.png" alt="AMD Logo" onerror="this.onerror=null;this.style.display='none';">
+  </header>
+
+  <!-- Balance Section -->
+  <section class="balance-section">
+    <div class="greeting">Hi, Guest</div>
+    <div class="balance-container">
+      <div class="balance-info">
+        <div class="label">Available Balance</div>
+        <div class="amount">₦<span id="current-balance">1.00</span></div>
+      </div>
+      <div class="balance-buttons">
+        <a href="withdraw.html" id="withdraw-btn">Withdraw</a>
+        <a href="deposit.html" id="deposit-btn">Deposit</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Settings Heading -->
+  <h2 class="settings-heading">Settings</h2>
+
+  <!-- Settings List -->
+  <div class="settings-list">
+    <a href="bank-information.html" class="settings-item">
+      <img src="images/bank.png" alt="Bank Information" onerror="this.onerror=null;this.style.display='none';">
+      <span>Bank Information</span>
+    </a>
+    <a href="transaction-history.html" class="settings-item">
+      <img src="images/claendar-lines.png" alt="Transaction History" onerror="this.onerror=null;this.style.display='none';">
+      <span>Transaction History</span>
+    </a>
+    <a href="https://t.me/AMD_intercept" class="settings-item">
+      <img src="images/user-headset.png" alt="Customer Support" onerror="this.onerror=null;this.style.display='none';">
+      <span>Customer Support</span>
+    </a>
+    <a href="change-password.html" class="settings-item">
+      <img src="images/lock.png" alt="Change Password" onerror="this.onerror=null;this.style.display='none';">
+      <span>Change Password</span>
+    </a>
+    <a href="index.html" class="settings-item">
+      <img src="images/power.png" alt="Log Out" onerror="this.onerror=null;this.style.display='none';">
+      <span>Log Out</span>
+    </a>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <footer class="bottom-nav">
+    <div class="nav-item">
+      <a href="home.html" class="nav-link">
+        <img src="images/home.png" alt="Home icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Home</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="activities.html" class="nav-link">
+        <img src="images/shopping-bag.png" alt="Activities icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Activities</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="refer.html" class="nav-link">
+        <img src="images/user-add.png" alt="Refer icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Refer</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="me.html" class="nav-link">
+        <img src="images/user.png" alt="Me icon" onerror="this.onerror=null;this.style.display='none';">
+        <span>Me</span>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    /* JSONBin.io Setup */
+    const API_KEY = '$2a$10$nnSfeJQZY9FjkKghjfzlPuWFrIe/JV46TLSQbnho77T3kkmx/mMvK';
+    const BIN_ID = '67c9d4dfad19ca34f817aa25';
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    async function fetchJSONBin() {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "GET",
+          headers: { "X-Master-Key": API_KEY }
+        });
+        const data = await response.json();
+        console.log("Data fetched:", data.record);
+        return data.record;
+      } catch (error) {
+        console.error("Error fetching JSONBin:", error);
+        return null;
+      }
+    }
+
+    async function updateJSONBin(data) {
+      try {
+        const response = await fetch(BIN_URL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": API_KEY
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        console.log("Data updated:", result);
+      } catch (error) {
+        console.error("Error updating JSONBin:", error);
+      }
+    }
+
+    /* Update Balance Display */
+    async function updateBalanceDisplay() {
+      try {
+        const data = await fetchJSONBin();
+        if (!data) return;
+        const users = data.users || [];
+        const currentUser = data.currentUser;
+        if (!currentUser) {
+          window.location.href = 'index.html';
+          return;
+        }
+        const latestUserData = users.find(u => u.email === currentUser.email);
+        if (latestUserData) {
+          document.querySelector('.greeting').textContent = `Hi, ${latestUserData.firstName}`;
+          // Directly display the base balance stored in JSONBin
+          const baseBalance = Number(latestUserData.balance);
+          document.getElementById('current-balance').textContent = baseBalance.toFixed(2);
+          // Update currentUser in JSONBin data
+          data.currentUser = latestUserData;
+          await updateJSONBin(data);
+        }
+      } catch (error) {
+        console.error('Balance update error:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await updateBalanceDisplay();
+    });
+  </script>
+</body>
+</html>
